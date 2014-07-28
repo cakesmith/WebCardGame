@@ -1,0 +1,62 @@
+﻿<div id="home" data-bind="with: homeVm">
+    <div id="login" data-bind="css: { hidden: !displayLogin() }" class="hidden">
+        <div id="subLogin" data-bind="with: loginVm">
+            <input id="userName" type="text" data-bind="value:playerName, valueUpdate: 'keypress', executeOnEnter: join" /><input id="gameId" type="text" data-bind="value: gameId" /><input id="loginButton" type="button" value="Join" data-bind="click: join" />
+        </div>
+    </div>
+    <div id="lobby" data-bind="css: { hidden: !displayLobby() }" class="hidden">
+        <div class="gameSummary">
+            <div>Foo</div>
+            <input type="button" value="Join" />
+        </div>
+        <div class="gameSummary">
+            <div>Bar</div>
+            <input type="button" value="Join" />
+        </div>
+    </div>
+    <div id="gameArea" data-bind="css: { hidden: !displayGame() }" class="hidden">
+        <div id="subGameArea" data-bind="with: gameVm">
+            <div id="activeCards" class="row">
+                <div id="blackCardArea">
+                    <div data-bind="template: { name: 'black-card-template', data: blackCard }"></div>
+                </div>
+                <div id="whiteCardArea" data-bind="template: {name: 'white-big-card-template', foreach: playedCards }"></div>
+                <div id="stagingCardArea" style="min-height: 100px;" data-bind="template: {name: 'white-big-card-template', foreach: stagedCards, afterRender: reapplyDraggableToHand}"></div>
+            </div>       
+            
+            <div id="playerHand" class="row">
+                <div id="myWhiteCardArea" data-bind=" template: {name: 'white-small-card-template', foreach: playerCards, afterRender: reapplyDraggableToStaging }"></div>
+            </div>
+            <div id="status" class="row" style="border: 1px solid black;">
+                <div id="players" style="float:left; border: 1px solid black; overflow-y: scroll; max-height: 125px; min-height: 125px">
+                    <table id="playersTable" data-bind="template: {name: 'player-list-template', foreach: playersInGame}"></table>
+                </div>
+                <div id="chat" style=" overflow-y: auto; min-height: 100px; max-height: 100px;">
+                    <table id="chatTable" data-bind="template: {name: 'chatlog-template', foreach: chatLog, afterRender: fixScrolling }"></table>
+                </div>
+                <input id="chatEntry" type="text" style="width: 100%" data-bind="value:typedChatText, valueUpdate: 'keypress', executeOnEnter: sendTypedChatText" />
+            </div>
+            <div style="clear:both" />
+    </div>
+</div>
+
+<script type="text/html" id="black-card-template">
+    <div data-bind="attr: {'id': cardId }" class="card bigCard blackCard"><span data-bind="text: cardText"></span></div>
+</script>
+
+<script type="text/html" id="white-big-card-template">
+    <div data-bind="attr: {'id': cardId }" class="card bigCard whiteCard"><span data-bind="text: cardText"></span></div>
+</script>
+    
+<script type="text/html" id="white-small-card-template">
+    <div data-bind="attr: {'id': cardId }" class="card smallCard whiteCard"><span data-bind="text: cardText"></span></div>
+</script>
+
+<script type="text/html" id="player-list-template">
+    <tr><td data-bind ="attr: {'id': Id}, text: Name"></td><td data-bind="text: Points"></td></tr>
+</script>
+    
+<script type="text/html" id="chatlog-template">
+    <tr><td data-bind="attr: {'id': Player.Id}, text: Player.Name"></td><td data-bind="text: Message"></td></tr>
+</script>
+
